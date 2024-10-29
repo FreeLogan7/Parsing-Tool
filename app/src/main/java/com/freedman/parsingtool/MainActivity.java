@@ -9,15 +9,16 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.documentfile.provider.DocumentFile;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button importData;
-    private CheckBox saveSelection;
+    private Uri selectedUri;
     ActivityResultLauncher<String> mGetContent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,33 +26,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setViews();
+        importButtonClicked();
         setupImport();
-        //On Import Button Click SELECT any file!
+
+
+
+
+    }
+
+    private void setViews(){
+        importData = findViewById(R.id.import_data);
+    }
+
+    //On Import Button Click SELECT any file!
+    private void importButtonClicked() {
         importData.setOnClickListener(v -> {
+            CheckBox saveSelection = findViewById(R.id.checkbox_database);
             mGetContent.launch("*/*");
         });
-
-         if (saveSelection.isChecked()){
-             //Save to Database
-         }
-         else{
-             //Save Locally
-         }
-
     }
-
-    private void setViews() {
-        importData = findViewById(R.id.import_data);
-        saveSelection = findViewById(R.id.checkbox_database);
-    }
-
 
     private void setupImport() {
         mGetContent = registerForActivityResult(new GetContent(), uri -> {
             if (uri != null) {
+                selectedUri = uri;
                 //Display if file selected exists with name
-                Toast.makeText(MainActivity.this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
-                Log.e("TAG", uri.toString());
+                Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
 
             }
         });

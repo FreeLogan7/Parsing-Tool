@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/import_data"
         app:layout_constraintStart_toStartOf="@id/import_data"
-
         android:text="@string/checkbox_save_database"/>
 
   </androidx.constraintlayout.widget.ConstraintLayout>

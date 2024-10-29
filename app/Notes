@@ -5,6 +5,9 @@
 2. Import File (CSV or JSON)
 
 3. Check if CSV or JSON
+- Gaining information from the uri
+- ContentResolver has security issues but more commonly used
+- DocumentFile is more secure
 
 4. Determine how to store the data
 - A CSV and JSON store data differently
