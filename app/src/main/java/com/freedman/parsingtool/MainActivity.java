@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private Button importData;
+    private CheckBox saveSelection;
     ActivityResultLauncher<String> mGetContent;
 
     @Override
@@ -29,10 +31,18 @@ public class MainActivity extends AppCompatActivity {
             mGetContent.launch("*/*");
         });
 
+         if (saveSelection.isChecked()){
+             //Save to Database
+         }
+         else{
+             //Save Locally
+         }
+
     }
 
     private void setViews() {
         importData = findViewById(R.id.import_data);
+        saveSelection = findViewById(R.id.checkbox_database);
     }
 
 
