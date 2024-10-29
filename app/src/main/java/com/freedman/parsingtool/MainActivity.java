@@ -12,10 +12,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
 
+import java.io.File;
+import java.net.URI;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button importData;
-    private Uri selectedUri;
     ActivityResultLauncher<String> mGetContent;
 
     private FileConverter converter = new FileConverter();
@@ -47,12 +49,10 @@ public class MainActivity extends AppCompatActivity {
     private void setupImport() {
         mGetContent = registerForActivityResult(new GetContent(), uri -> {
             if (uri == null) return;
-            selectedUri = uri;
             //Display if file selected exists with name
             Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
             try {
-                DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
-                converter.convert(documentFile);
+                converter.convert(uri);
             } catch (IllegalArgumentException e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }

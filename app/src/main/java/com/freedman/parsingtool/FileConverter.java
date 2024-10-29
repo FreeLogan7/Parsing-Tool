@@ -2,27 +2,35 @@ package com.freedman.parsingtool;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.documentfile.provider.DocumentFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class FileConverter {
 
-    public void convert(DocumentFile documentFile){
-        String fileType = getFileType(documentFile);
-        checkFileType(fileType);
+    public void convert(Uri uri) {
+        Log.e("HEEEEEEYY", uri.getPath());
+        File file = new File(uri.getPath());
+        String fileType = getFileType(file);
+        getFileReader(fileType);
+
+
     }
 
-    private String getFileType(DocumentFile documentFile) {
-        if (documentFile == null) {
+
+    private String getFileType(File file) throws IOException {
+        if (file == null) {
             throw new IllegalArgumentException("DocumentFile is Null!");
         }
-        return documentFile.getType();
+        return Files.probeContentType(file.toPath());
     }
 
-    private void checkFileType(String fileType) {
+    private void getFileReader(String fileType) {
         if (fileType.equals("text/comma-separated-values")) {
             //DO THIS
         } else if (fileType.equals("application/json")) {
