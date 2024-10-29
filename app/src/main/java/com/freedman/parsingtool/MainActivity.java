@@ -4,7 +4,6 @@ import static androidx.activity.result.contract.ActivityResultContracts.GetConte
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -19,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     private Uri selectedUri;
     ActivityResultLauncher<String> mGetContent;
 
+    private FileConverter converter = new FileConverter();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         setViews();
         setupImport();
         importButtonClicked();
-
 
     }
 
@@ -50,20 +50,20 @@ public class MainActivity extends AppCompatActivity {
             selectedUri = uri;
             //Display if file selected exists with name
             Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
-            getFileDetails(selectedUri);
+            try {
+                String type = getFileDetails(selectedUri);
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
     }
 
-    private void getFileDetails(Uri uri) {
+    private String getFileDetails(Uri uri) {
         DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
-        if (documentFile != null) {
-            Log.e("HERE", uri.toString());
-            String fileType = documentFile.getType();
-            String name = documentFile.getName();
-            checkFileType(fileType);
-        } else {
-            Toast.makeText(this, "DocumentFile is Null!", Toast.LENGTH_LONG).show();
+        if (documentFile == null) {
+            throw new IllegalArgumentException("DocumentFile is Null!");
         }
+        return documentFile.getType();
     }
 
     private void checkFileType(String fileType) {
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
             //DO THIS
         } else if (fileType.equals("application/json")) {
             //DO THAT
+        } else {
+            Toast.makeText(this, "Not Supported File Type!", Toast.LENGTH_LONG).show();
         }
     }
 
