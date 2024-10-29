@@ -26,15 +26,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setViews();
-        importButtonClicked();
         setupImport();
-
-
+        importButtonClicked();
 
 
     }
 
-    private void setViews(){
+    private void setViews() {
         importData = findViewById(R.id.import_data);
     }
 
@@ -48,37 +46,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupImport() {
         mGetContent = registerForActivityResult(new GetContent(), uri -> {
-            if (uri != null) {
-                selectedUri = uri;
-                //Display if file selected exists with name
-                Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
-                getFileDetails(selectedUri);
-            }
+            if (uri == null) return;
+            selectedUri = uri;
+            //Display if file selected exists with name
+            Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
+            getFileDetails(selectedUri);
         });
     }
 
-    private void getFileDetails(Uri uri){
-        DocumentFile documentFile = DocumentFile.fromSingleUri(this,uri);
-        if (documentFile != null){
-            Log.e("HERE", uri.toString() );
+    private void getFileDetails(Uri uri) {
+        DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
+        if (documentFile != null) {
+            Log.e("HERE", uri.toString());
             String fileType = documentFile.getType();
             String name = documentFile.getName();
             checkFileType(fileType);
-        }
-        else {
-            Toast.makeText(this,"DocumentFile is Null!",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "DocumentFile is Null!", Toast.LENGTH_LONG).show();
         }
     }
 
     private void checkFileType(String fileType) {
-        if(fileType.equals("text/comma-separated-values")){
-          //DO THIS
+        if (fileType.equals("text/comma-separated-values")) {
+            //DO THIS
         } else if (fileType.equals("application/json")) {
             //DO THAT
         }
     }
-
-
 
 
 }
