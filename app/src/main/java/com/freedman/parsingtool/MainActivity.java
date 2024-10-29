@@ -70,11 +70,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void checkFileType(String fileType) {
+        if(fileType.equals("text/comma-separated-values")){
+          //DO THIS
+        } else if (fileType.equals("application/json")) {
+            //DO THAT
+        }
+    }
+
+
+
 
 }
 
 
-
+//    private void dataHolderType() {
+//        if (saveSelection.isChecked()){
+//            //Save to Database
+//        }
+//        else{
+//            //Save Locally
+//        }
+//    }
 
 /*
 Sources:
