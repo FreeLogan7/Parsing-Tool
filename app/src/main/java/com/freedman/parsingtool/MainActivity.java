@@ -23,7 +23,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setViews();
+        setupImport();
+        //On Import Button Click SELECT any file!
+        importData.setOnClickListener(v -> {
+            mGetContent.launch("*/*");
+        });
 
+
+
+    }
+
+    private void setViews() {
+        importData = findViewById(R.id.import_data);
+    }
+
+
+    private void setupImport() {
         mGetContent = registerForActivityResult(new GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri uri) {
@@ -33,17 +48,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //On Import Button Click SELECT any file!
-        importData.setOnClickListener(v -> {
-            mGetContent.launch("*/*");
-        });
-
-
-    }
-
-    private void setViews() {
-        importData = findViewById(R.id.import_data);
     }
 
 
