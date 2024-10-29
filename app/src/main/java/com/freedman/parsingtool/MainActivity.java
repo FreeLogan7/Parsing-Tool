@@ -51,43 +51,20 @@ public class MainActivity extends AppCompatActivity {
             //Display if file selected exists with name
             Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
             try {
-                String type = getFileDetails(selectedUri);
+                DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
+                converter.convert(documentFile);
             } catch (IllegalArgumentException e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private String getFileDetails(Uri uri) {
-        DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
-        if (documentFile == null) {
-            throw new IllegalArgumentException("DocumentFile is Null!");
-        }
-        return documentFile.getType();
-    }
 
-    private void checkFileType(String fileType) {
-        if (fileType.equals("text/comma-separated-values")) {
-            //DO THIS
-        } else if (fileType.equals("application/json")) {
-            //DO THAT
-        } else {
-            Toast.makeText(this, "Not Supported File Type!", Toast.LENGTH_LONG).show();
-        }
-    }
+
 
 
 }
 
-
-//    private void dataHolderType() {
-//        if (saveSelection.isChecked()){
-//            //Save to Database
-//        }
-//        else{
-//            //Save Locally
-//        }
-//    }
 
 /*
 Sources:
