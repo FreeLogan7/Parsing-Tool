@@ -1,0 +1,24 @@
+1. Create Buttons
+- Import
+- Save Location
+
+2. Import File (CSV or JSON)
+
+3. Check if CSV or JSON
+
+4. Determine how to store the data
+- A CSV and JSON store data differently
+- Define an optimal way to parse
+- Or Research a library for external use
+    1. OpenCSV -> Can use for converting CSV
+    2. Gson -> Can use for converting JSON
+
+5. Send to specific Reader
+
+6. CONVERT TO PARSED DATA
+
+7. Save to Database or Local
+
+8.
+
+
