@@ -52,9 +52,22 @@ public class MainActivity extends AppCompatActivity {
                 selectedUri = uri;
                 //Display if file selected exists with name
                 Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
-
+                getFileDetails(selectedUri);
             }
         });
+    }
+
+    private void getFileDetails(Uri uri){
+        DocumentFile documentFile = DocumentFile.fromSingleUri(this,uri);
+        if (documentFile != null){
+            Log.e("HERE", uri.toString() );
+            String fileType = documentFile.getType();
+            String name = documentFile.getName();
+            checkFileType(fileType);
+        }
+        else {
+            Toast.makeText(this,"DocumentFile is Null!",Toast.LENGTH_LONG).show();
+        }
     }
 
 
