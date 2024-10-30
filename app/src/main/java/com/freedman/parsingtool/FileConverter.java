@@ -13,11 +13,13 @@ import java.nio.file.Files;
 
 public class FileConverter {
 
-    public void convert(Uri uri) {
+    public void convert(Uri uri) throws IOException {
         Log.e("HEEEEEEYY", uri.getPath());
         File file = new File(uri.getPath());
-        String fileType = getFileType(file);
-        getFileReader(fileType);
+//        String fileType = getFileType(file);
+//        getFileReader(fileType);
+
+        // This stuff below should go in a JsonFileReader
 
 
     }
