@@ -7,7 +7,12 @@
 3. Check if CSV or JSON
 - Gaining information from the uri
 - ContentResolver has security issues but more commonly used
-- DocumentFile is more secure
+- DocumentFile is more secure (but needs contentResolver still)
+    -This doesn't open the file easily to read
+    -Need to use ContentResolver and protect uri through validation
+        - https://developer.android.com/privacy-and-security/risks/content-resolver#java
+    -Android Studio Uri objects
+
 
 4. Determine how to store the data
 - A CSV and JSON store data differently
@@ -15,6 +20,27 @@
 - Or Research a library for external use
     1. OpenCSV -> Can use for converting CSV
     2. Gson -> Can use for converting JSON
+    3. Jackson -> Can use for converting JSON
+
+4.1 Parsing a CSV File
+- While Manual parsing is a few lines of code
+    - This will not include edge cases
+    - Take longer to determine all edge cases
+    - Can do if there is more time once complete
+- OpenCSV is shorter and has built in functions to help
+
+4.2 Parsing a JSON File
+- Options
+    -Jackson
+    -Gson
+    -JSON.org
+    -Manual
+Manual parsing is a lot more code, especially due
+to not knowing fields
+- Jackson is a library that uses ObjectMapper
+    - It handles type, missing fields, name, null, etc.
+    - https://www.baeldung.com/jackson
+
 
 5. Send to specific Reader
 
