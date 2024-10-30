@@ -2,8 +2,10 @@ package com.freedman.parsingtool;
 
 import static androidx.activity.result.contract.ActivityResultContracts.GetContent;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -12,8 +14,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,19 +55,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupImport() {
         mGetContent = registerForActivityResult(new GetContent(), uri -> {
-            if (uri == null) return;
+            if (uri == null) throw new IllegalArgumentException("uri is Null!");
             //Display if file selected exists with name
             Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
-            try {
-                converter.convert(uri);
-            } catch (IllegalArgumentException | IOException e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+
+            createContentResolver(uri);
         });
     }
 
-
-
+    private void createContentResolver(Uri uri) {
+        ContentResolver resolver = getContentResolver();
+        try {
+            converter.convert(uri, resolver);
+        } catch (IllegalArgumentException | IOException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e("TOASTY-ERROR", e.getMessage(), e);
+        }
+    }
 
 
 }
@@ -73,6 +83,7 @@ https://developer.android.com/training/data-storage/shared/documents-files
 - How to open a file
 - Deprecated - > leads to registerForActivityResult use instead (seen below this link)
 - https://developer.android.com/training/basics/intents/result
-
+https://www.baeldung.com/jackson-object-mapper-tutorial
+- How to use Jackson
 
  */
