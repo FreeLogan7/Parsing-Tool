@@ -1,63 +1,45 @@
 package com.freedman.parsingtool;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
-import androidx.documentfile.provider.DocumentFile;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
+import com.freedman.parsingtool.filereader.CsvFileReader;
+import com.freedman.parsingtool.filereader.FileReader;
+import com.freedman.parsingtool.filereader.JsonFileReader;
+import com.opencsv.exceptions.CsvValidationException;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 
 public class FileConverter {
 
-    public void convert(Uri uri, ContentResolver resolver) throws IOException {
-        String mimeType = getMimeType(uri,resolver);
-        getFileReader(mimeType);
+    private JsonFileReader jsonReader = new JsonFileReader();
+    private CsvFileReader csvFileReader = new CsvFileReader();
 
-
-
-        readFileWithContentResolver(uri, resolver);
-
-
-
-
-        // This stuff below should go in a JsonFileReader
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Map content = objectMapper.readValue(file, Map.class);
-//        Log.e("yessir", content.toString() );
-
+    public void convert(Uri uri, ContentResolver resolver) throws IOException, CsvValidationException {
+        String mimeType = getMimeType(uri, resolver);
+        InputStream inputStream = resolver.openInputStream(uri);
+        FileReader reader = getFileReader(mimeType);
+        List<Map<String, Object>> data = reader.read(inputStream);
+        Log.d("TAG", "Data Test!: " + data);
     }
 
     private String getMimeType(Uri uri, ContentResolver resolver) {
-        if (resolver == null) throw new IllegalArgumentException("File Type is Null");
+        if (resolver == null) throw new IllegalArgumentException("Mime Type is Null");
         return resolver.getType(uri);
     }
 
-    private void getFileReader(String mimeType){
+    private FileReader getFileReader(String mimeType) {
         if (mimeType.equals("text/csv") || mimeType.equals("text/comma-separated-values")) {
-            //GET CSV Reader
+            return csvFileReader;
         } else if (mimeType.equals("application/json")) {
-            //GET JSON Reader
-        } else throw new IllegalArgumentException("File Type Not Supported");
-
+            return jsonReader;
+        }
+        throw new IllegalArgumentException("File Type Not Supported");
     }
-
-    private void readFileWithContentResolver(Uri uri, ContentResolver resolver) throws FileNotFoundException {
-        InputStream inputStream = resolver.openInputStream(uri);
-
-    }
-
-
-
 
 
 }
