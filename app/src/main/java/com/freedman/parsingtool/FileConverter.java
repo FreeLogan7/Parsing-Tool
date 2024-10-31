@@ -11,6 +11,7 @@ import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,22 +25,38 @@ public class FileConverter {
         InputStream inputStream = resolver.openInputStream(uri);
         FileReader reader = getFileReader(mimeType);
         List<Map<String, Object>> data = reader.read(inputStream);
-        Log.d("TAG", "Data Test!: " + data);
 
-        getKeys(data);
+
+
+//        getKeys(data);
+        //storeInDatabase(data);
+
     }
 
-    private void getKeys(List<Map<String, Object>> data) {
-        for (Map<String, Object> element : data) {
-            for ( String key:element){
-                //Loop over same list to check values
-                //for every row to match it to key
-                //
+    private List<String> getKeys(List<Map<String, Object>> data) {
+        List<String> keys = new ArrayList<>();
+        for (Map<String, Object> row : data) {
+            for (String column: row.keySet()){
+                if (!keys.contains(column)){keys.add(column);}
             }
+        }
+        return keys;
+    }
 
-            Log.d("TAG", "openMeUp: " + element);
+
+    private void storeInDatabase(List<Map<String, Object>> data) {
+        List<String> keys = new ArrayList<>();
+        int rowNumber = 0;
+        for (Map<String, Object> row : data) {
+            for (String key : row.keySet()) {
+                Object value = row.get(key);
+                //Database(rowNumber, key, value); //int, String, Object
+            }
+            rowNumber++;
         }
     }
+
+
 
     private String getMimeType(Uri uri, ContentResolver resolver) {
         if (resolver == null) throw new IllegalArgumentException("Mime Type is Null");
