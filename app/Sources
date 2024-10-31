@@ -1,0 +1,47 @@
+Sources:
+
+File Types:
+https://developer.android.com/training/data-storage/shared/documents-files
+- How to open a file
+- Deprecated - > leads to registerForActivityResult use instead (seen below this link)
+- https://developer.android.com/training/basics/intents/result
+
+
+https://developer.android.com/reference/androidx/media3/common/FileTypes#inferFileTypeFromMimeType(java.lang.String)
+- Inferring File Types to determine Mime Type
+- Android Studio requires ContentResolver anyway
+
+Content Resolver:
+https://developer.android.com/reference/android/content/ContentResolver
+-Need to be created in Activity (With some context)
+-Security issue, use validation to avoid
+https://developer.android.com/reference/android/content/ContextWrapper#getContentResolver()
+
+https://developer.android.com/privacy-and-security/risks/content-resolver
+-Validation
+-Sample code in Notes
+
+
+InputStream:
+-https://developer.android.com/reference/java/io/InputStream
+
+
+Reader:
+
+Jackson:
+https://www.baeldung.com/jackson-object-mapper-tutorial
+- Library - Parse JSON
+- How to use Jackson
+- Object Mapper
+- 'Creating Java Map From JSON String'
+   -https://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/DeserializationFeature.html
+
+OpenCSV:
+https://opencsv.sourceforge.net/apidocs/com/opencsv/CSVReader.html
+-Library - Parse CSV
+
+
+https://stackoverflow.com/questions/32268733/using-jackson-to-manually-parse-json
+- Research into manual parsing of Jackson
+
+

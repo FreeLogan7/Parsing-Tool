@@ -25,6 +25,20 @@ public class FileConverter {
         FileReader reader = getFileReader(mimeType);
         List<Map<String, Object>> data = reader.read(inputStream);
         Log.d("TAG", "Data Test!: " + data);
+
+        getKeys(data);
+    }
+
+    private void getKeys(List<Map<String, Object>> data) {
+        for (Map<String, Object> element : data) {
+            for ( String key:element){
+                //Loop over same list to check values
+                //for every row to match it to key
+                //
+            }
+
+            Log.d("TAG", "openMeUp: " + element);
+        }
     }
 
     private String getMimeType(Uri uri, ContentResolver resolver) {

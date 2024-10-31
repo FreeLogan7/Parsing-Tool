@@ -3,8 +3,14 @@ package com.freedman.parsingtool;
 import static androidx.activity.result.contract.ActivityResultContracts.GetContent;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.system.ErrnoException;
+import android.system.Os;
+import android.system.OsConstants;
+import android.system.StructStat;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void createContentResolver(Uri uri) {
         ContentResolver resolver = getContentResolver();
         try {
@@ -75,17 +82,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
 }
 
-
-/*
-Sources:
-https://developer.android.com/training/data-storage/shared/documents-files
-- How to open a file
-- Deprecated - > leads to registerForActivityResult use instead (seen below this link)
-- https://developer.android.com/training/basics/intents/result
-https://www.baeldung.com/jackson-object-mapper-tutorial
-- How to use Jackson
-
- */
