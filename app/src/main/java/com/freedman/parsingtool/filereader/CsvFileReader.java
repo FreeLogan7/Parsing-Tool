@@ -25,9 +25,13 @@ public class CsvFileReader implements FileReader {
         try {
              List<String[]> table = reader.readAll();
              String[] keys = table.get(0);
+
              for (int rowIndex=1; rowIndex < table.size(); rowIndex++){
-                 Map<String, Object> entry = new HashMap<>();
                  String[] row = table.get(rowIndex);
+
+                 isValidRow(row, keys, rowIndex);
+
+                 Map<String, Object> entry = new HashMap<>();
                  for (int colIndex=0; colIndex < row.length; colIndex++){
                      String key = keys[colIndex];
                      String value = row[colIndex];
@@ -40,5 +44,13 @@ public class CsvFileReader implements FileReader {
         }
         return content;
     }
+
+    //Confirms Valid Row Length
+    private static void isValidRow(String[] row, String[] keys, int rowIndex) throws IOException {
+        if (row.length> keys.length){
+            throw new IOException("CSV format error: row length invalid! Row: " + rowIndex + "Column: Out of bounds: " + row.length);
+        }
+    }
+
 
 }
