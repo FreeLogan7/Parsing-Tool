@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class JsonFileReader implements FileReader {
 
+    @Override
     public List<Map<String, Object>> read(InputStream inputStream) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
