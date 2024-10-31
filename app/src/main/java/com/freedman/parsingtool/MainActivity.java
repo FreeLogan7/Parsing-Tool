@@ -14,6 +14,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.opencsv.exceptions.CsvValidationException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver resolver = getContentResolver();
         try {
             converter.convert(uri, resolver);
-        } catch (IllegalArgumentException | IOException e) {
+        } catch (IllegalArgumentException | IOException | CsvValidationException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("TOASTY-ERROR", e.getMessage(), e);
         }
