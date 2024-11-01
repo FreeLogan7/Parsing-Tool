@@ -46,9 +46,11 @@ public class FileConverter {
         List<Map<String, Object>> data = reader.read(inputStream);
         List<String> keys = getKeys(data);
 
+        List<String[]> table = convertDataToTable(keys, data);
+
         if (!checkboxDatabase.isChecked()) {
             FileWriterInterface writer = getFileWriter(convertToJson);
-            writer.write(context, data, keys, fileName);
+            writer.write(context, data, table, fileName);
             displayInterface.onFileCreate(fileName);
         } else {
             saveDatabase();
@@ -59,7 +61,26 @@ public class FileConverter {
     private void saveDatabase() {
     }
 
+    private List<String[]> convertDataToTable(List<String> keys, List<Map<String, Object>> data) {
+        List<String[]> table = new ArrayList<>();
+        String[] keyData = keys.toArray(new String[keys.size()]);
+        table.add(keyData);
 
+        //The full Key Set passed in, can be used to make the schema
+        //The columns then remain the same as they look for keys
+        for (Map<String, Object> row : data) {
+            String[] rowData = new String[keys.size()];
+            for (int colIndex = 0; colIndex < keys.size(); colIndex++) {
+                String key = keys.get(colIndex);
+                Object value = row.get(key);
+                if (value != null) {
+                    rowData[colIndex] = value.toString();
+                } else rowData[colIndex] = "";
+            }
+            table.add(rowData);
+        }
+        return table;
+    }
 
     private String getMimeType(Uri uri, ContentResolver resolver) {
         if (resolver == null) throw new IllegalArgumentException("Mime Type is Null");
@@ -87,17 +108,6 @@ public class FileConverter {
         return keys;
     }
 
-    private void storeInDatabase(List<Map<String, Object>> data) {
-        List<String> keys = new ArrayList<>();
-        int rowIndex = 0;
-        for (Map<String, Object> row : data) {
-            for (String key : row.keySet()) {
-                Object value = row.get(key);
-                //Database(rowIndex, key, value); //int, String, Object
-            }
-            rowIndex++;
-        }
-    }
 
     private FileWriterInterface getFileWriter(CheckBox convertToJson) {
         if (convertToJson.isChecked()) {
@@ -106,36 +116,7 @@ public class FileConverter {
         return csvWriter;
     }
 
-    interface DisplayFileCreated { void onFileCreate(String fileName);}
+    interface DisplayFileCreated {
+        void onFileCreate(String fileName);
+    }
 }
-
-
-//
-
-
-//    private FileWriterInterface getFileWriter(CheckBox convertToJson, CheckBox convertToCsv) {
-//    if (convertToJson.isChecked()){
-//        csvWriter.write();
-//    }
-//    }
-
-
-//        Log.e("DATA-ISUS", "convert: "+data );
-//        dataConversion(data);
-//Choose to SAVE to DATABASE
-//Data manipulation
-
-//Choose CONVERSION
-//IF TO JSON -> data converts!
-//IF to CSV -> data manipulation first
-
-//        jsonWriter.write(context,data,keys);
-
-
-//storeInDatabase(data);
-
-
-//    private void dataConversion(List<Map<String, Object>> data){
-//
-//
-//    }
