@@ -1,4 +1,4 @@
-package com.freedman.parsingtool;
+package com.freedman.parsingtool.logicclass;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -39,7 +39,7 @@ public class FileConverter {
     public ParsedEntriesDao parsedEntriesDao;
 
     //Constructor
-    FileConverter(DisplayFileCreated displayInterface) {
+    public FileConverter(DisplayFileCreated displayInterface) {
         this.displayInterface = displayInterface;
     }
 
@@ -133,7 +133,7 @@ public class FileConverter {
         return csvWriter;
     }
 
-    interface DisplayFileCreated {
+    public interface DisplayFileCreated {
         void onFileCreate(String fileName);
     }
 
