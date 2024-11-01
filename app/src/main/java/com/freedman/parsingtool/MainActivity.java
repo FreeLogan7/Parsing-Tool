@@ -4,6 +4,7 @@ import static androidx.activity.result.contract.ActivityResultContracts.GetConte
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends AppCompatActivity implements FileConverter.DisplayFileCreated {
 
     private Button importData;
+    private Button reloadData;
     private EditText userFileName;
     private CheckBox checkboxFile;
     private CheckBox checkboxDatabase;
@@ -35,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
 
     ActivityResultLauncher<String> mGetContent;
     private FileConverter converter = new FileConverter(this);
-//    private ParsedEntriesDao parsedEntriesDao; = ParsedEntriesDatabase.getDatabase(this).parsedEntriesDao();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +44,19 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
         setContentView(R.layout.activity_main);
         setViews();
         setupImport();
+        buttonHandler();
+    }
+
+    private void buttonHandler() {
         importButtonClicked();
         saveButtons();
         convertButtons();
-//        parsedEntriesDatabase = ParsedEntriesDatabase.getDatabase(this);
-//        parsedEntriesDatabase.
-
+        reloadDataClicked();
     }
 
-
     private void setViews() {
-        importData = findViewById(R.id.import_data);
+        importData = findViewById(R.id.button_import_data);
+        reloadData = findViewById(R.id.button_reload_data);
         checkboxFile = findViewById(R.id.checkbox_file);
         checkboxDatabase = findViewById(R.id.checkbox_database);
         checkboxConvertToJson = findViewById(R.id.checkbox_json);
@@ -74,59 +76,76 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
     //On Import Button Click SELECT any file!
     private void importButtonClicked() {
         importData.setOnClickListener(v -> {
-            if (userFileName == null) throw new IllegalArgumentException("File Name is Null");
-            else if (userFileName.getText().toString().contains(" "))
-                throw new IllegalArgumentException("File name cannot contain spaces");
-            else if (conversionNotSelected()) throw new IllegalArgumentException("Neither JSON NOR CSV were selected");
-            else mGetContent.launch("*/*");
+            if (checkImportButtonErrors()) mGetContent.launch("*/*");
         });
     }
 
+    private boolean checkImportButtonErrors() {
+        if (userFileName == null) {
+            throw new IllegalArgumentException("File Name is Null");
+        } else if (userFileName.getText().toString().contains(" ")) {
+            throw new IllegalArgumentException("File name cannot contain spaces");
+        } else if (conversionNotSelected()) {
+            throw new IllegalArgumentException("Neither JSON NOR CSV were selected");
+        } else if (userFileName.getText().toString().isEmpty()) {
+            throw new IllegalArgumentException("File name is empty");
+        } else if (!checkboxConvertToCsv.isChecked() && !checkboxConvertToJson.isChecked() && !checkboxDatabase.isChecked()) {
+            throw new IllegalArgumentException("No Selection was made");
+        }
+        return true;
+    }
+
     private boolean conversionNotSelected() {
-        return !checkboxConvertToJson.isChecked() && !checkboxConvertToCsv.isChecked();
+        return checkboxFile.isChecked() && !checkboxConvertToJson.isChecked() && !checkboxConvertToCsv.isChecked();
     }
 
     private void createContentResolver(Uri uri) {
         ContentResolver resolver = getContentResolver();
         WeakReference<Activity> activityRef = new WeakReference<>(this);
         try {
-            converter.convert(
-                    uri,
-                    resolver,
-                    activityRef.get(),
-                    checkboxDatabase,
-                    checkboxConvertToJson,
-                    userFileName.getText().toString());
-
+            converter.convert(uri, resolver, activityRef.get(), checkboxDatabase, checkboxConvertToJson, userFileName.getText().toString());
         } catch (IllegalArgumentException | IOException | CsvValidationException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("TOASTY-ERROR", e.getMessage(), e);
         }
     }
 
-
     private void saveButtons() {
         checkboxFile.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                checkboxDatabase.setChecked(false);
-                checkboxConvertToCsv.setVisibility(View.VISIBLE);
-                checkboxConvertToJson.setVisibility(View.VISIBLE);
-            } else if (!checkboxFile.isChecked()) {
-                checkboxConvertToCsv.setVisibility(View.INVISIBLE);
-                checkboxConvertToJson.setVisibility(View.INVISIBLE);
-                clearConvertCheckbox();
-            }
+            selectFileAndDisplaySaveOptions(isChecked);
         });
 
         checkboxDatabase.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                checkboxFile.setChecked(false);
-                checkboxConvertToCsv.setVisibility(View.INVISIBLE);
-                checkboxConvertToJson.setVisibility(View.INVISIBLE);
-                clearConvertCheckbox();
-            }
-
+            selectDatabaseAndHideConversionOptions(isChecked);
         });
+    }
+
+    private void selectFileAndDisplaySaveOptions(boolean isChecked) {
+        if (isChecked) {
+            checkboxDatabase.setChecked(false);
+            displayConverterCheckbox();
+        } else if (!checkboxFile.isChecked()) {
+            clearConverterCheckbox();
+        }
+    }
+
+    private void selectDatabaseAndHideConversionOptions(boolean isChecked) {
+        if (isChecked) {
+            checkboxFile.setChecked(false);
+            clearConverterCheckbox();
+        }
+    }
+
+    private void clearConverterCheckbox() {
+        checkboxConvertToCsv.setVisibility(View.INVISIBLE);
+        checkboxConvertToJson.setVisibility(View.INVISIBLE);
+        checkboxConvertToJson.setChecked(false);
+        checkboxConvertToCsv.setChecked(false);
+    }
+
+    private void displayConverterCheckbox() {
+        checkboxConvertToCsv.setVisibility(View.VISIBLE);
+        checkboxConvertToJson.setVisibility(View.VISIBLE);
     }
 
     private void convertButtons() {
@@ -142,11 +161,13 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
         });
     }
 
-    private void clearConvertCheckbox() {
-        checkboxConvertToJson.setChecked(false);
-        checkboxConvertToCsv.setChecked(false);
-    }
+    private void reloadDataClicked() {
+        reloadData.setOnClickListener(v-> {
+            Intent intent = new Intent(this, databaseInfoActivity.class);
+            startActivity(intent);
 
+        });
+    }
 
     @Override
     public void onFileCreate(String fileName) {

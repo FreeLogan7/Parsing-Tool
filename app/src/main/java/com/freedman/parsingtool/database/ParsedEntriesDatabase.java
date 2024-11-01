@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.freedman.parsingtool.tables.ParsedEntries;
 
-@Database(entities = {ParsedEntries.class}, version = 0)
+@Database(entities = {ParsedEntries.class}, version = 1)
 public abstract class ParsedEntriesDatabase extends RoomDatabase {
     public abstract ParsedEntriesDao parsedEntriesDao();
 

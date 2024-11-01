@@ -51,6 +51,4 @@ public class CsvFileReader implements FileReader {
             throw new IOException("CSV format error: row length invalid! Row: " + rowIndex + "Column: Out of bounds: " + row.length);
         }
     }
-
-
 }

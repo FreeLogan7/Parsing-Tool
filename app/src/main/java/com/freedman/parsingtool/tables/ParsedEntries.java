@@ -1,50 +1,48 @@
 package com.freedman.parsingtool.tables;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+
 
 import java.io.Serializable;
 
-@Entity(tableName = "parsedEntries")
+@Entity(
+        tableName = "parsedEntries",
+        primaryKeys = {"row_number", "key"}
+)
 public class ParsedEntries implements Serializable {
     @ColumnInfo(name = "row_number")
-    @PrimaryKey
     private int rowNumber;
-    @PrimaryKey
+    @NonNull
     private String key;
     private String value = "";
+    private String tableName ="";
 
 
-    public ParsedEntries(int rowNumber, String key, String value) {
+    public ParsedEntries(int rowNumber, @NonNull String key, String value, String tableName) {
         this.rowNumber = rowNumber;
         this.key = key;
         this.value = value;
+        this.tableName = tableName;
     }
 
     public int getRowNumber() {
         return rowNumber;
     }
 
-    public void setRowNumber(int rowNumber) {
-        this.rowNumber = rowNumber;
-    }
-
     public String getKey() {
         return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public String getTableName() {
+        return tableName;
     }
+
 }
 
 
