@@ -31,6 +31,8 @@ public class ParsedEntries implements Serializable {
         return rowNumber;
     }
 
+    public String getRowNumberAsString() {return String.valueOf(rowNumber);}
+
     public String getKey() {
         return key;
     }

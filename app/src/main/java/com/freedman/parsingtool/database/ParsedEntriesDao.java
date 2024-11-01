@@ -17,11 +17,12 @@ public interface ParsedEntriesDao {
     @Query("SELECT * FROM parsedEntries WHERE tableName = :tableName")
     List<ParsedEntries> getUserSpecifiedTable(String tableName);
 
-    @Query("SELECT tableName FROM parsedEntries")
+    @Query("SELECT DISTINCT tableName FROM parsedEntries")
     List<String> getTableNames();
 
     @Query("SELECT * FROM parsedEntries")
     List<ParsedEntries> getAllTable();
+
 
 
 }
