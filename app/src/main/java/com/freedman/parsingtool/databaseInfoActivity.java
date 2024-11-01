@@ -1,5 +1,6 @@
 package com.freedman.parsingtool;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -16,7 +17,8 @@ import com.freedman.parsingtool.database.ParsedEntriesDatabase;
 import com.freedman.parsingtool.logicclass.FileConverter;
 import com.freedman.parsingtool.tables.ParsedEntries;
 
-import java.sql.Array;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,33 +77,39 @@ public class databaseInfoActivity extends AppCompatActivity implements DataAdapt
             List<ParsedEntries> parsedEntriesList = parsedEntriesDao.getUserSpecifiedTable(userSelectedTable);
             runOnUiThread(() -> {
                 this.parsedEntriesList = parsedEntriesList;
-                if (this.parsedEntriesList != null) {
-                    moveDataOutOfThread(this.parsedEntriesList, userSelectedTable);
-                    //I have had a lot of issues with thread, which is why i send the variable around
+
+                try {
+                    moveDataOutOfThread(userSelectedTable);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
+                //I have had a lot of issues with thread, which is why i send the variable around
+
             });
         });
         thread.start();
     }
 
-    //WeakReference<Activity> activityRef = new WeakReference<>(this); for context if getContext Doesn't work
-    private void moveDataOutOfThread(List<ParsedEntries> specifiedData, String userSelectedTable) {
+
+    private void moveDataOutOfThread(String userSelectedTable) throws IOException {
+        List<ParsedEntries> specifiedData = this.parsedEntriesList;
+        WeakReference<Activity> activityRef = new WeakReference<>(this);
         int keyLength = getKeyLength(specifiedData);
 
-        List<Map<String, Object>> table = new ArrayList<>();
+        List<Map<String, Object>> data = new ArrayList<>();
         Map<String, Object> store = new HashMap<String, Object>();
         int index =0;
-        while (index < specifiedData.size()) {
+        while (index < specifiedData.size()) {//both are same index goes in, col adds
             for (int column = 0; column < keyLength; column++) {
-                String key = specifiedData.get(column).getKey();
-                Object value = specifiedData.get(column).getValue();
+                String key = specifiedData.get(index).getKey();
+                Object value = specifiedData.get(index).getValue();
                 store.put(key,value);
                 index++;
             }
-            table.add(store);
+            data.add(store);
         }
 
-//converter.convertSecondHalf(data, checkboxDatabase, checkboxConvertToJson, getContext(),userSelectedTable);
+converter.convertSecondHalf(data, checkboxDatabase, checkboxConvertToJson, activityRef.get(),userSelectedTable);
 
     }
 
