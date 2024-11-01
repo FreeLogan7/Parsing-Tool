@@ -1,24 +1,31 @@
-package com.freedman.parsingtool;
+package com.freedman.parsingtool.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.freedman.parsingtool.R;
 import com.freedman.parsingtool.tables.ParsedEntries;
 
 import java.util.List;
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ItemViewHolder> {
 
-    private List<ParsedEntries> parsedEntries;
+    public List<ParsedEntries> parsedEntries;
+    public static sendMeInfoListener listener;
 
 
-    public DataAdapter(List<ParsedEntries> parsedEntries) {
+    public void setParsedEntries(List<ParsedEntries> parsedEntries) {
         this.parsedEntries = parsedEntries;
+    }
+
+    public DataAdapter(sendMeInfoListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -26,7 +33,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ItemViewHolder
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_info_database, parent, false);
+                .inflate(R.layout.item_database_view, parent, false);
         return new ItemViewHolder(view);
     }
 
@@ -34,22 +41,41 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
         ParsedEntries currentItem = parsedEntries.get(position);
-        // Bind data to the view
-        holder.EditText.setText(currentItem.getTableName());
+        holder.textViewTableName.setText(currentItem.getTableName());
+        holder.textViewKey.setText(currentItem.getKey());
+        holder.textViewValue.setText(currentItem.getValue());
+        holder.textViewNumber.setText(currentItem.getRowNumberAsString());
+
     }
 
     @Override
     public int getItemCount() {
-        return parsedEntries.size();
+           return parsedEntries.size();
     }
 
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        public EditText EditText;
+        public TextView textViewTableName;
+        public TextView textViewKey;
+        public TextView textViewValue;
+        public TextView textViewNumber;
 
         public ItemViewHolder(@NonNull View parsedEntries) {
             super(parsedEntries);
-            EditText = parsedEntries.findViewById(R.id.edit_text_file_name);
+            textViewTableName = parsedEntries.findViewById(R.id.text_view_table_name);
+            textViewKey = parsedEntries.findViewById(R.id.text_view_key);
+            textViewValue = parsedEntries.findViewById(R.id.text_view_value);
+            textViewNumber = parsedEntries.findViewById(R.id.text_view_number);
+
+            textViewTableName.setOnClickListener(v ->{
+                listener.sendMeTableName(textViewTableName.getText().toString());
+            });
+
         }
+    }
+
+    public interface sendMeInfoListener{
+        void sendMeTableName(String name);
+
     }
 }
