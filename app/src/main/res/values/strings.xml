@@ -2,4 +2,8 @@
     <string name="app_name">Parsing Tool</string>
     <string name="checkbox_save_database">Save to Database</string>
     <string name="button_import_data">Import Data!</string>
+    <string name="convert_to_json">Convert to JSON</string>
+    <string name="convert_to_csv">Convert to CSV</string>
+    <string name="parsing_tool">Parsing Tool</string>
+    <string name="save_to_file">Save to File</string>
 </resources>
