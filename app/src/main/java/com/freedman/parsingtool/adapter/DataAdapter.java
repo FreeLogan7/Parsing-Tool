@@ -33,7 +33,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ItemViewHolder
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_database_view, parent, false);
+                .inflate(R.layout.item_reload, parent, false);
         return new ItemViewHolder(view);
     }
 
@@ -76,6 +76,5 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ItemViewHolder
 
     public interface sendMeInfoListener{
         void sendMeTableName(String name);
-
     }
 }

@@ -11,4 +11,5 @@
     <string name="reload">Reload</string>
     <string name="view_database">View Database!</string>
     <string name="reload_data">Reload Data!</string>
+    <string name="last_minute_for_finishing_code">last minute: For finishing code</string>
 </resources>

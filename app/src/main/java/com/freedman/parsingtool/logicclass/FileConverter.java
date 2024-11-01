@@ -56,6 +56,16 @@ public class FileConverter {
         InputStream inputStream = resolver.openInputStream(uri);
         FileReader reader = getFileReader(mimeType);
         List<Map<String, Object>> data = reader.read(inputStream);
+
+        convertSecondHalf(data,checkboxDatabase,convertToJson,context, fileName);
+
+    }
+
+    public void convertSecondHalf(List<Map<String, Object>> data,
+                                  CheckBox checkboxDatabase,
+                                  CheckBox convertToJson,
+                                  Context context,
+                                  String fileName) throws IOException {
         List<String> keys = getKeys(data);
         List<String[]> table = convertDataToTable(keys, data);
 
