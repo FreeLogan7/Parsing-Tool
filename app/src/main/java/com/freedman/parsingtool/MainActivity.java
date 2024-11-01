@@ -2,6 +2,7 @@ package com.freedman.parsingtool;
 
 import static androidx.activity.result.contract.ActivityResultContracts.GetContent;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FileConverter.DisplayFileCreated {
 
     private Button importData;
     private EditText userFileName;
@@ -28,22 +30,19 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkboxConvertToJson;
     private CheckBox checkboxConvertToCsv;
     ActivityResultLauncher<String> mGetContent;
-    private FileConverter converter = new FileConverter();
+
+    private FileConverter converter = new FileConverter(this);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         setViews();
         setupImport();
         importButtonClicked();
         saveButtons();
         convertButtons();
-
-
     }
 
 
@@ -78,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void createContentResolver(Uri uri) {
         ContentResolver resolver = getContentResolver();
+        WeakReference<Activity> activityRef = new WeakReference<>(this);
         try {
-            //In Future Find solution to avoid sending 'this'
-            converter.convert(uri, resolver, this, checkboxDatabase, checkboxConvertToJson, userFileName.getText().toString());
+            converter.convert(uri, resolver, activityRef.get(), checkboxDatabase, checkboxConvertToJson, userFileName.getText().toString());
         } catch (IllegalArgumentException | IOException | CsvValidationException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("TOASTY-ERROR", e.getMessage(), e);
@@ -131,5 +130,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onFileCreate(String fileName) {
+        Toast.makeText(this,"File has been Created!", Toast.LENGTH_LONG).show();
+    }
 }
 

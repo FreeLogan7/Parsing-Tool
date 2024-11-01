@@ -25,41 +25,39 @@ public class FileConverter {
     private JsonFileWriter jsonWriter = new JsonFileWriter();
     private CsvFileWriter csvWriter = new CsvFileWriter();
 
-    public void convert(Uri uri,
-                        ContentResolver resolver,
-                        Context context,
-                        CheckBox checkboxDatabase,
-                        CheckBox convertToJson,
-                        String fileName) throws IOException, CsvValidationException {
+    private DisplayFileCreated displayInterface;
+
+    FileConverter(DisplayFileCreated displayInterface) {
+        this.displayInterface = displayInterface;
+    }
+
+
+    public void convert(
+            Uri uri,
+            ContentResolver resolver,
+            Context context,
+            CheckBox checkboxDatabase,
+            CheckBox convertToJson,
+            String fileName) throws IOException, CsvValidationException {
+
         String mimeType = getMimeType(uri, resolver);
         InputStream inputStream = resolver.openInputStream(uri);
         FileReader reader = getFileReader(mimeType);
         List<Map<String, Object>> data = reader.read(inputStream);
         List<String> keys = getKeys(data);
 
-        if (!checkboxDatabase.isChecked()){
+        if (!checkboxDatabase.isChecked()) {
             FileWriterInterface writer = getFileWriter(convertToJson);
-            writer.write( context, data, keys, fileName);
-        }else {
+            writer.write(context, data, keys, fileName);
+            displayInterface.onFileCreate(fileName);
+        } else {
             saveDatabase();
         }
 
-
-
-
-
-
-
-
-
-//        csvWriter.write(context, data, keys);
     }
 
     private void saveDatabase() {
     }
-
-
-
 
     private List<String> getKeys(List<Map<String, Object>> data) {
         List<String> keys = new ArrayList<>();
@@ -100,13 +98,14 @@ public class FileConverter {
     }
 
     private FileWriterInterface getFileWriter(CheckBox convertToJson) {
-        if (convertToJson.isChecked()){
+        if (convertToJson.isChecked()) {
             return jsonWriter;
         }
         return csvWriter;
     }
-}
 
+    interface DisplayFileCreated { void onFileCreate(String fileName);}
+}
 
 
 //
@@ -132,7 +131,6 @@ public class FileConverter {
 
 
 //storeInDatabase(data);
-
 
 
 //    private void dataConversion(List<Map<String, Object>> data){
