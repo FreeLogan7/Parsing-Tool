@@ -1,8 +1,9 @@
 package com.freedman.parsingtool;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
+import android.widget.CheckBox;
 
 import com.freedman.parsingtool.filereader.CsvFileReader;
 import com.freedman.parsingtool.filereader.FileReader;
@@ -20,43 +21,57 @@ public class FileConverter {
     private JsonFileReader jsonReader = new JsonFileReader();
     private CsvFileReader csvFileReader = new CsvFileReader();
 
-    public void convert(Uri uri, ContentResolver resolver) throws IOException, CsvValidationException {
+    private JsonFileWriter jsonWriter = new JsonFileWriter();
+    private CsvFileWriter csvWriter = new CsvFileWriter();
+
+    public void convert(Uri uri,
+                        ContentResolver resolver,
+                        Context context,
+                        CheckBox saveFile,
+                        CheckBox saveDatabase,
+                        CheckBox convertToJson,
+                        CheckBox convertToCsv) throws IOException, CsvValidationException {
         String mimeType = getMimeType(uri, resolver);
         InputStream inputStream = resolver.openInputStream(uri);
         FileReader reader = getFileReader(mimeType);
         List<Map<String, Object>> data = reader.read(inputStream);
+//        FileWriterInterface writer = getFileWriter(convertToJson, convertToCsv);
 
 
-
-//        getKeys(data);
-        //storeInDatabase(data);
-
+        List<String> keys = getKeys(data);
+        csvWriter.write(context, data, keys);
     }
+
+//    private FileWriterInterface getFileWriter(CheckBox convertToJson, CheckBox convertToCsv) {
+//    if (convertToJson.isChecked()){
+//        csvWriter.write();
+//    }
+//    }
+
 
     private List<String> getKeys(List<Map<String, Object>> data) {
         List<String> keys = new ArrayList<>();
         for (Map<String, Object> row : data) {
-            for (String column: row.keySet()){
-                if (!keys.contains(column)){keys.add(column);}
+            for (String colIndex : row.keySet()) {
+                if (!keys.contains(colIndex)) {
+                    keys.add(colIndex);
+                }
             }
         }
         return keys;
     }
 
-
     private void storeInDatabase(List<Map<String, Object>> data) {
         List<String> keys = new ArrayList<>();
-        int rowNumber = 0;
+        int rowIndex = 0;
         for (Map<String, Object> row : data) {
             for (String key : row.keySet()) {
                 Object value = row.get(key);
-                //Database(rowNumber, key, value); //int, String, Object
+                //Database(rowIndex, key, value); //int, String, Object
             }
-            rowNumber++;
+            rowIndex++;
         }
     }
-
-
 
     private String getMimeType(Uri uri, ContentResolver resolver) {
         if (resolver == null) throw new IllegalArgumentException("Mime Type is Null");
@@ -71,6 +86,26 @@ public class FileConverter {
         }
         throw new IllegalArgumentException("File Type Not Supported");
     }
-
-
 }
+
+
+//        Log.e("DATA-ISUS", "convert: "+data );
+//        dataConversion(data);
+//Choose to SAVE to DATABASE
+//Data manipulation
+
+//Choose CONVERSION
+//IF TO JSON -> data converts!
+//IF to CSV -> data manipulation first
+
+//        jsonWriter.write(context,data,keys);
+
+
+//storeInDatabase(data);
+
+
+
+//    private void dataConversion(List<Map<String, Object>> data){
+//
+//
+//    }
