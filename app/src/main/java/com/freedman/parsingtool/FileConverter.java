@@ -4,13 +4,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.widget.CheckBox;
-import android.widget.EditText;
 
 import com.freedman.parsingtool.filereader.CsvFileReader;
 import com.freedman.parsingtool.filereader.FileReader;
 import com.freedman.parsingtool.filereader.FileWriterInterface;
 import com.freedman.parsingtool.filereader.JsonFileReader;
-import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
@@ -32,15 +30,16 @@ public class FileConverter {
                         Context context,
                         CheckBox checkboxDatabase,
                         CheckBox convertToJson,
-                        EditText fileName) throws IOException, CsvValidationException {
+                        String fileName) throws IOException, CsvValidationException {
         String mimeType = getMimeType(uri, resolver);
         InputStream inputStream = resolver.openInputStream(uri);
         FileReader reader = getFileReader(mimeType);
         List<Map<String, Object>> data = reader.read(inputStream);
+        List<String> keys = getKeys(data);
 
         if (!checkboxDatabase.isChecked()){
             FileWriterInterface writer = getFileWriter(convertToJson);
-            writer.write();
+            writer.write( context, data, keys, fileName);
         }else {
             saveDatabase();
         }
@@ -52,8 +51,8 @@ public class FileConverter {
 
 
 
-        List<String> keys = getKeys(data);
-        csvWriter.write(context, data, keys);
+
+//        csvWriter.write(context, data, keys);
     }
 
     private void saveDatabase() {

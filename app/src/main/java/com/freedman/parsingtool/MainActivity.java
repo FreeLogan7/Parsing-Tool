@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         checkboxDatabase = findViewById(R.id.checkbox_database);
         checkboxConvertToJson = findViewById(R.id.checkbox_json);
         checkboxConvertToCsv = findViewById(R.id.checkbox_csv);
+        userFileName = findViewById(R.id.edit_text_file_name);
     }
 
     //Consider Discussing Security validation for uri
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private void importButtonClicked() {
         importData.setOnClickListener(v -> {
             if (userFileName == null) throw new IllegalArgumentException("File Name is Null");
-            else if (userFileName.toString().contains(" "))
+            else if (userFileName.getText().toString().contains(" "))
                 throw new IllegalArgumentException("File name cannot contain spaces");
             else mGetContent.launch("*/*");
         });
@@ -79,8 +80,7 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver resolver = getContentResolver();
         try {
             //In Future Find solution to avoid sending 'this'
-
-            converter.convert(uri, resolver, this, checkboxDatabase, checkboxConvertToJson, userFileName);
+            converter.convert(uri, resolver, this, checkboxDatabase, checkboxConvertToJson, userFileName.getText().toString());
         } catch (IllegalArgumentException | IOException | CsvValidationException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("TOASTY-ERROR", e.getMessage(), e);
