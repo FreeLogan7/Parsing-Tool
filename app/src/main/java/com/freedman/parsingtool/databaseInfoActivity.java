@@ -88,15 +88,17 @@ public class databaseInfoActivity extends AppCompatActivity implements DataAdapt
     private void moveDataOutOfThread(List<ParsedEntries> specifiedData, String userSelectedTable) {
         int keyLength = getKeyLength(specifiedData);
 
+        List<Map<String, Object>> table = new ArrayList<>();
         Map<String, Object> store = new HashMap<String, Object>();
-        List<String[]> table = new ArrayList<>();
-        String[] stored = new String[keyLength];
         int index =0;
         while (index < specifiedData.size()) {
             for (int column = 0; column < keyLength; column++) {
-                stored[column] = specifiedData.get(column).getKey();
+                String key = specifiedData.get(column).getKey();
+                Object value = specifiedData.get(column).getValue();
+                store.put(key,value);
+                index++;
             }
-            index++;
+            table.add(store);
         }
 
 //converter.convertSecondHalf(data, checkboxDatabase, checkboxConvertToJson, getContext(),userSelectedTable);
