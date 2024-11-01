@@ -19,13 +19,13 @@ import java.util.Map;
 
 public class FileConverter {
 
-    private JsonFileReader jsonReader = new JsonFileReader();
-    private CsvFileReader csvFileReader = new CsvFileReader();
+    private final JsonFileReader jsonReader = new JsonFileReader();
+    private final CsvFileReader csvFileReader = new CsvFileReader();
 
-    private JsonFileWriter jsonWriter = new JsonFileWriter();
-    private CsvFileWriter csvWriter = new CsvFileWriter();
+    private final JsonFileWriter jsonWriter = new JsonFileWriter();
+    private final CsvFileWriter csvWriter = new CsvFileWriter();
 
-    private DisplayFileCreated displayInterface;
+    private final DisplayFileCreated displayInterface;
 
     FileConverter(DisplayFileCreated displayInterface) {
         this.displayInterface = displayInterface;
@@ -59,6 +59,22 @@ public class FileConverter {
     private void saveDatabase() {
     }
 
+
+
+    private String getMimeType(Uri uri, ContentResolver resolver) {
+        if (resolver == null) throw new IllegalArgumentException("Mime Type is Null");
+        return resolver.getType(uri);
+    }
+
+    private FileReader getFileReader(String mimeType) {
+        if (mimeType.equals("text/csv") || mimeType.equals("text/comma-separated-values")) {
+            return csvFileReader;
+        } else if (mimeType.equals("application/json")) {
+            return jsonReader;
+        }
+        throw new IllegalArgumentException("File Type Not Supported");
+    }
+
     private List<String> getKeys(List<Map<String, Object>> data) {
         List<String> keys = new ArrayList<>();
         for (Map<String, Object> row : data) {
@@ -81,20 +97,6 @@ public class FileConverter {
             }
             rowIndex++;
         }
-    }
-
-    private String getMimeType(Uri uri, ContentResolver resolver) {
-        if (resolver == null) throw new IllegalArgumentException("Mime Type is Null");
-        return resolver.getType(uri);
-    }
-
-    private FileReader getFileReader(String mimeType) {
-        if (mimeType.equals("text/csv") || mimeType.equals("text/comma-separated-values")) {
-            return csvFileReader;
-        } else if (mimeType.equals("application/json")) {
-            return jsonReader;
-        }
-        throw new IllegalArgumentException("File Type Not Supported");
     }
 
     private FileWriterInterface getFileWriter(CheckBox convertToJson) {

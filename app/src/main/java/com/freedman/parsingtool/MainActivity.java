@@ -29,10 +29,9 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
     private CheckBox checkboxDatabase;
     private CheckBox checkboxConvertToJson;
     private CheckBox checkboxConvertToCsv;
+
     ActivityResultLauncher<String> mGetContent;
-
     private FileConverter converter = new FileConverter(this);
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +58,7 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
     private void setupImport() {
         mGetContent = registerForActivityResult(new GetContent(), uri -> {
             if (uri == null) throw new IllegalArgumentException("uri is Null!");
-            Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, "Selected File!", Toast.LENGTH_SHORT).show();
             createContentResolver(uri);
         });
     }
@@ -71,15 +69,27 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
             if (userFileName == null) throw new IllegalArgumentException("File Name is Null");
             else if (userFileName.getText().toString().contains(" "))
                 throw new IllegalArgumentException("File name cannot contain spaces");
+            else if (conversionNotSelected()) throw new IllegalArgumentException("Neither JSON NOR CSV were selected");
             else mGetContent.launch("*/*");
         });
+    }
+
+    private boolean conversionNotSelected() {
+        return !checkboxConvertToJson.isChecked() && !checkboxConvertToCsv.isChecked();
     }
 
     private void createContentResolver(Uri uri) {
         ContentResolver resolver = getContentResolver();
         WeakReference<Activity> activityRef = new WeakReference<>(this);
         try {
-            converter.convert(uri, resolver, activityRef.get(), checkboxDatabase, checkboxConvertToJson, userFileName.getText().toString());
+            converter.convert(
+                    uri,
+                    resolver,
+                    activityRef.get(),
+                    checkboxDatabase,
+                    checkboxConvertToJson,
+                    userFileName.getText().toString());
+
         } catch (IllegalArgumentException | IOException | CsvValidationException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("TOASTY-ERROR", e.getMessage(), e);
@@ -132,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
 
     @Override
     public void onFileCreate(String fileName) {
-        Toast.makeText(this,"File has been Created!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "File has been Created!", Toast.LENGTH_LONG).show();
     }
 }
 
