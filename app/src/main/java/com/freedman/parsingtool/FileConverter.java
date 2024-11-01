@@ -7,7 +7,9 @@ import android.widget.CheckBox;
 
 import com.freedman.parsingtool.filereader.CsvFileReader;
 import com.freedman.parsingtool.filereader.FileReader;
+import com.freedman.parsingtool.filereader.FileWriterInterface;
 import com.freedman.parsingtool.filereader.JsonFileReader;
+import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
@@ -27,26 +29,36 @@ public class FileConverter {
     public void convert(Uri uri,
                         ContentResolver resolver,
                         Context context,
-                        CheckBox saveFile,
-                        CheckBox saveDatabase,
-                        CheckBox convertToJson,
-                        CheckBox convertToCsv) throws IOException, CsvValidationException {
+                        CheckBox checkboxDatabase,
+                        CheckBox convertToJson) throws IOException, CsvValidationException {
         String mimeType = getMimeType(uri, resolver);
         InputStream inputStream = resolver.openInputStream(uri);
         FileReader reader = getFileReader(mimeType);
         List<Map<String, Object>> data = reader.read(inputStream);
-//        FileWriterInterface writer = getFileWriter(convertToJson, convertToCsv);
+
+        if (!checkboxDatabase.isChecked()){
+            FileWriterInterface writer = getFileWriter(convertToJson);
+        }else {
+
+        }
+
+
+
+
+
+
 
 
         List<String> keys = getKeys(data);
         csvWriter.write(context, data, keys);
     }
 
-//    private FileWriterInterface getFileWriter(CheckBox convertToJson, CheckBox convertToCsv) {
-//    if (convertToJson.isChecked()){
-//        csvWriter.write();
-//    }
-//    }
+    private FileWriterInterface getFileWriter(CheckBox convertToJson) {
+        if (convertToJson.isChecked()){
+            return jsonWriter;
+        }
+        return csvWriter;
+    }
 
 
     private List<String> getKeys(List<Map<String, Object>> data) {
@@ -87,6 +99,17 @@ public class FileConverter {
         throw new IllegalArgumentException("File Type Not Supported");
     }
 }
+
+
+
+//
+
+
+//    private FileWriterInterface getFileWriter(CheckBox convertToJson, CheckBox convertToCsv) {
+//    if (convertToJson.isChecked()){
+//        csvWriter.write();
+//    }
+//    }
 
 
 //        Log.e("DATA-ISUS", "convert: "+data );
