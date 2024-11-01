@@ -1,9 +1,8 @@
-package com.freedman.parsingtool;
+package com.freedman.parsingtool.filewriter;
 
 import android.content.Context;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freedman.parsingtool.filereader.FileWriterInterface;
 
 import java.io.File;
 import java.io.IOException;

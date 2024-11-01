@@ -1,14 +1,20 @@
 package com.freedman.parsingtool;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.widget.CheckBox;
 
+import com.freedman.parsingtool.database.ParsedEntriesDao;
+import com.freedman.parsingtool.database.ParsedEntriesDatabase;
 import com.freedman.parsingtool.filereader.CsvFileReader;
 import com.freedman.parsingtool.filereader.FileReader;
-import com.freedman.parsingtool.filereader.FileWriterInterface;
+import com.freedman.parsingtool.filewriter.FileWriterInterface;
 import com.freedman.parsingtool.filereader.JsonFileReader;
+import com.freedman.parsingtool.filewriter.CsvFileWriter;
+import com.freedman.parsingtool.filewriter.JsonFileWriter;
+import com.freedman.parsingtool.tables.ParsedEntries;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
@@ -26,6 +32,9 @@ public class FileConverter {
     private final CsvFileWriter csvWriter = new CsvFileWriter();
 
     private final DisplayFileCreated displayInterface;
+
+    public ParsedEntriesDao parsedEntriesDao;
+
 
     FileConverter(DisplayFileCreated displayInterface) {
         this.displayInterface = displayInterface;
@@ -48,20 +57,26 @@ public class FileConverter {
 
         List<String[]> table = convertDataToTable(keys, data);
 
+//        new Thread(()-> {
+//            ((Activity) context).runOnUiThread(()-> {
+//                parsedEntriesDatabase.parsedEntriesDao.get
+//            } );
+//        }).start();
         if (!checkboxDatabase.isChecked()) {
             FileWriterInterface writer = getFileWriter(convertToJson);
             writer.write(context, data, table, fileName);
             displayInterface.onFileCreate(fileName);
         } else {
-            saveDatabase(table);
+            saveDatabase(table, context);
         }
-
     }
 
-    private void saveDatabase(List<String[]> table) {
+    private void saveDatabase(List<String[]> table, Context context) {
+        parsedEntriesDao = ParsedEntriesDatabase.getDatabase(context).parsedEntriesDao();
+
         for (int i =1; i<table.size(); i++){
             for (int j=0; j<table.get(0).length; j++){
-                database(i, table.get(0)[j], table.get(i)[j]);
+                parsedEntriesDao.createRow(new ParsedEntries(i, table.get(0)[j], table.get(i)[j]));
             }
         }
     }

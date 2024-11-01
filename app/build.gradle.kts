@@ -40,9 +40,16 @@ dependencies {
     implementation(libs.jackson.databind)
     implementation(libs.opencsv)
     testImplementation("org.mockito:mockito-core:5.14.2")
+
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+
     testImplementation(libs.junit)
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+
+
 }
 

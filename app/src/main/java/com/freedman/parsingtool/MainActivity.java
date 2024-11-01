@@ -16,6 +16,9 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.freedman.parsingtool.database.ParsedEntriesDao;
+import com.freedman.parsingtool.database.ParsedEntriesDatabase;
+import com.freedman.parsingtool.tables.ParsedEntries;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
 
     ActivityResultLauncher<String> mGetContent;
     private FileConverter converter = new FileConverter(this);
+//    private ParsedEntriesDao parsedEntriesDao; = ParsedEntriesDatabase.getDatabase(this).parsedEntriesDao();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
         importButtonClicked();
         saveButtons();
         convertButtons();
+//        parsedEntriesDatabase = ParsedEntriesDatabase.getDatabase(this);
+//        parsedEntriesDatabase.
+
     }
 
 

@@ -1,14 +1,12 @@
-package com.freedman.parsingtool;
+package com.freedman.parsingtool.filewriter;
 
 import android.content.Context;
 
-import com.freedman.parsingtool.filereader.FileWriterInterface;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

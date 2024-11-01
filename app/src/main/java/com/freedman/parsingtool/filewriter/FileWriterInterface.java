@@ -1,4 +1,4 @@
-package com.freedman.parsingtool.filereader;
+package com.freedman.parsingtool.filewriter;
 
 import android.content.Context;
 
