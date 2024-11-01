@@ -13,9 +13,8 @@ import java.util.Map;
 public class JsonFileWriter implements FileWriterInterface {
 
     @Override
-    public void write(Context context, List<Map<String, Object>> data) throws IOException {
+    public void write(Context context, List<Map<String, Object>> data, List<String> keys) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-
         mapper.writeValue(new File(context.getFilesDir(),"output.json"), data);
     }
 }
