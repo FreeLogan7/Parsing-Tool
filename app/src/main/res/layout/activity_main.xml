@@ -12,26 +12,24 @@
         android:layout_width="375dp"
         android:layout_height="80dp"
         android:layout_marginTop="60dp"
-        app:cardBackgroundColor="#91F3F0"
         android:text="@string/parsing_tool"
-        app:cardCornerRadius="20dp"
         android:textSize="56sp"
+        app:cardBackgroundColor="#91F3F0"
+        app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardForegroundColor="#91F3F0"
+            android:gravity="center"
             android:text="@string/parsing_tool"
             android:textSize="56sp"
-            android:gravity="center"
-            />
+            app:cardForegroundColor="#91F3F0" />
 
     </androidx.cardview.widget.CardView>
-
 
 
     <EditText
@@ -40,15 +38,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="40dp"
-        android:backgroundTintMode="screen"
         android:backgroundTint="#85CBF1"
+        android:backgroundTintMode="screen"
         android:hint="@string/edit_text_file_name_hint"
         android:importantForAutofill="no"
         android:inputType="text"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@id/card_view_title"
+        app:layout_constraintBottom_toTopOf="@id/checkbox_file"
         app:layout_constraintEnd_toEndOf="@id/card_view_title"
-        app:layout_constraintBottom_toTopOf="@id/checkbox_file" />
+        app:layout_constraintStart_toStartOf="@id/card_view_title" />
 
     <CheckBox
         android:id="@+id/checkbox_file"
@@ -112,25 +110,38 @@
         android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkbox_csv"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_csv" />
+
+    <Button
+        android:id="@+id/button_view_database"
+        android:layout_width="200dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#63D6D6"
+        android:padding="16dp"
+        android:text="@string/view_database"
+        android:textColor="#252525"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_reload_data"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_import_data" />
 
     <Button
         android:id="@+id/button_reload_data"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-
-
+        android:layout_width="200dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="#63D6D6"
         android:padding="16dp"
         android:text="@string/reload_data"
         android:textColor="#252525"
-        android:textSize="32sp"
-        android:layout_marginBottom="20dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_import_data"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/button_view_database"
+        app:layout_constraintTop_toBottomOf="@id/button_import_data" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
