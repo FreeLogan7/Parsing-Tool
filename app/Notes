@@ -50,54 +50,25 @@ to not knowing fields
 
 8.
 
+https://developer.android.com/privacy-and-security/risks/content-resolver
+SECURITY CODE: future addition
+
+FileWriterInterface:
+- The writer uses a table for only CSVwriter, this table takes up memory
+and is unnecessary when converting to json. Look into Removal of step.
+
+
+
 Questions {
 Could arrays in JSON be supported or not?
     - What are the edge cases around that?
         - Representing Objects and Arrays in CSV can be very difficult
-        for the sake of the exercize. Arrays are not supported
+        for the sake of the exercise. Arrays are not supported
         in this application where we are strictly handling strings,
         ints, booleans.
 
         - Look into future Validation step to check correct data types
 }
-
-
-https://developer.android.com/privacy-and-security/risks/content-resolver
-SECURITY CODE: future addition {
-boolean isValidFile(Context ctx, ParcelFileDescriptor pfd, Uri fileUri) throws ErrnoException, IOException {
-        // Canonicalize to resolve symlinks and path traversals
-        String fdCanonical = new File(fileUri.getPath()).getCanonicalPath();
-
-        StructStat pfdStat = Os.fstat(pfd.getFileDescriptor());
-
-        // Lstat doesn't follow the symlink.
-        StructStat canonicalFileStat = Os.lstat(fdCanonical);
-
-        // Since we canonicalized (followed the links) the path already,
-        // the path shouldn't point to symlink unless it was changed in the meantime
-        if (OsConstants.S_ISLNK(canonicalFileStat.st_mode)) {
-            return false;
-        }
-
-        boolean sameFile =
-                pfdStat.st_dev == canonicalFileStat.st_dev && pfdStat.st_ino == canonicalFileStat.st_ino;
-        if (!sameFile) {
-            return false;
-        }
-        return !isBlockedPath(ctx, fdCanonical);
-    }
-    boolean isBlockedPath(Context ctx, String fdCanonical) {
-        // Paths that should rarely be exposed
-        if (fdCanonical.startsWith("/proc/") || fdCanonical.startsWith("/data/misc/")) {
-            return true;
-        }
-        return false;
-        // Implement logic to block desired directories. For example, specify
-        // the entire app data/ directory to block all access.
-    }
-}
-
-
 
 
 

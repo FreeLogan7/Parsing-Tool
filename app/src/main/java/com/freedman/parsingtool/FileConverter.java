@@ -53,12 +53,17 @@ public class FileConverter {
             writer.write(context, data, table, fileName);
             displayInterface.onFileCreate(fileName);
         } else {
-            saveDatabase();
+            saveDatabase(table);
         }
 
     }
 
-    private void saveDatabase() {
+    private void saveDatabase(List<String[]> table) {
+        for (int i =1; i<table.size(); i++){
+            for (int j=0; j<table.get(0).length; j++){
+                database(i, table.get(0)[j], table.get(i)[j]);
+            }
+        }
     }
 
     private List<String[]> convertDataToTable(List<String> keys, List<Map<String, Object>> data) {
