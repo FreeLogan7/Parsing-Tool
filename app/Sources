@@ -35,10 +35,15 @@ https://www.baeldung.com/jackson-object-mapper-tutorial
 - Object Mapper
 - 'Creating Java Map From JSON String'
    -https://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/DeserializationFeature.html
+-https://stackoverflow.com/questions/32268733/using-jackson-to-manually-parse-json
 
 OpenCSV:
 https://opencsv.sourceforge.net/apidocs/com/opencsv/CSVReader.html
 -Library - Parse CSV
+
+Extensions:
+https://docs.oracle.com/javase/8/docs/api/index.html?javax/activation/MimeType.html
+    - Mime Types
 
 
 https://stackoverflow.com/questions/32268733/using-jackson-to-manually-parse-json
