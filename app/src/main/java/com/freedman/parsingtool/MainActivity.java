@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -21,12 +22,13 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private Button importData;
+    private EditText userFileName;
+    private CheckBox checkboxFile;
+    private CheckBox checkboxDatabase;
+    private CheckBox checkboxConvertToJson;
+    private CheckBox checkboxConvertToCsv;
     ActivityResultLauncher<String> mGetContent;
     private FileConverter converter = new FileConverter();
-    CheckBox checkboxFile;
-    CheckBox checkboxDatabase;
-    CheckBox checkboxConvertToJson;
-    CheckBox checkboxConvertToCsv;
 
 
     @Override
@@ -44,18 +46,47 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void convertButtons() {
-        checkboxConvertToJson.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                checkboxConvertToCsv.setChecked(false);
-            }
-        });
-        checkboxConvertToCsv.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                checkboxConvertToJson.setChecked(false);
-            }
+
+    private void setViews() {
+        importData = findViewById(R.id.import_data);
+        checkboxFile = findViewById(R.id.checkbox_file);
+        checkboxDatabase = findViewById(R.id.checkbox_database);
+        checkboxConvertToJson = findViewById(R.id.checkbox_json);
+        checkboxConvertToCsv = findViewById(R.id.checkbox_csv);
+    }
+
+    //Consider Discussing Security validation for uri
+    private void setupImport() {
+        mGetContent = registerForActivityResult(new GetContent(), uri -> {
+            if (uri == null) throw new IllegalArgumentException("uri is Null!");
+            Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
+
+            createContentResolver(uri);
         });
     }
+
+    //On Import Button Click SELECT any file!
+    private void importButtonClicked() {
+        importData.setOnClickListener(v -> {
+            if (userFileName == null) throw new IllegalArgumentException("File Name is Null");
+            else if (userFileName.toString().contains(" "))
+                throw new IllegalArgumentException("File name cannot contain spaces");
+            else mGetContent.launch("*/*");
+        });
+    }
+
+    private void createContentResolver(Uri uri) {
+        ContentResolver resolver = getContentResolver();
+        try {
+            //In Future Find solution to avoid sending 'this'
+
+            converter.convert(uri, resolver, this, checkboxDatabase, checkboxConvertToJson, userFileName);
+        } catch (IllegalArgumentException | IOException | CsvValidationException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e("TOASTY-ERROR", e.getMessage(), e);
+        }
+    }
+
 
     private void saveButtons() {
         checkboxFile.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -81,48 +112,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void convertButtons() {
+        checkboxConvertToJson.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                checkboxConvertToCsv.setChecked(false);
+            }
+        });
+        checkboxConvertToCsv.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                checkboxConvertToJson.setChecked(false);
+            }
+        });
+    }
+
     private void clearConvertCheckbox() {
         checkboxConvertToJson.setChecked(false);
         checkboxConvertToCsv.setChecked(false);
     }
 
-
-    private void setViews() {
-        importData = findViewById(R.id.import_data);
-        checkboxFile = findViewById(R.id.checkbox_file);
-        checkboxDatabase = findViewById(R.id.checkbox_database);
-        checkboxConvertToJson = findViewById(R.id.checkbox_json);
-        checkboxConvertToCsv = findViewById(R.id.checkbox_csv);
-    }
-
-    //On Import Button Click SELECT any file!
-    private void importButtonClicked() {
-        importData.setOnClickListener(v -> {
-            mGetContent.launch("*/*");
-        });
-    }
-
-    //Consider Discussing Security validation for uri
-    private void setupImport() {
-        mGetContent = registerForActivityResult(new GetContent(), uri -> {
-            if (uri == null) throw new IllegalArgumentException("uri is Null!");
-            Toast.makeText(this, "Selected file: " + uri.toString(), Toast.LENGTH_SHORT).show();
-
-            createContentResolver(uri);
-        });
-    }
-
-    private void createContentResolver(Uri uri) {
-        ContentResolver resolver = getContentResolver();
-        try {
-            //In Future Find solution to avoid sending 'this'
-
-            converter.convert(uri, resolver, this, checkboxDatabase, checkboxConvertToJson);
-        } catch (IllegalArgumentException | IOException | CsvValidationException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.e("TOASTY-ERROR", e.getMessage(), e);
-        }
-    }
 
 }
 

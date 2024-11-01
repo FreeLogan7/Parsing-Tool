@@ -16,10 +16,9 @@ public class CsvFileWriter implements FileWriterInterface {
 
 
     @Override
-    public void write(Context context, List<Map<String, Object>> data, List<String> keys) throws IOException {
-        File file = new File(context.getFilesDir(), "output2.csv");
+    public void write(Context context, List<Map<String, Object>> data, List<String> keys, String fileName) throws IOException {
+        File file = new File(context.getFilesDir(), fileName+ ".csv");
         CSVWriter writer = new CSVWriter(new FileWriter(file));
-
         List<String[]> table = new ArrayList<>();
         String[] keyData = keys.toArray(new String[keys.size()]);
         table.add(keyData);

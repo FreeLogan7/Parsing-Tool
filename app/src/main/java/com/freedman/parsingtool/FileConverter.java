@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.widget.CheckBox;
+import android.widget.EditText;
 
 import com.freedman.parsingtool.filereader.CsvFileReader;
 import com.freedman.parsingtool.filereader.FileReader;
@@ -30,7 +31,8 @@ public class FileConverter {
                         ContentResolver resolver,
                         Context context,
                         CheckBox checkboxDatabase,
-                        CheckBox convertToJson) throws IOException, CsvValidationException {
+                        CheckBox convertToJson,
+                        EditText fileName) throws IOException, CsvValidationException {
         String mimeType = getMimeType(uri, resolver);
         InputStream inputStream = resolver.openInputStream(uri);
         FileReader reader = getFileReader(mimeType);
@@ -38,8 +40,9 @@ public class FileConverter {
 
         if (!checkboxDatabase.isChecked()){
             FileWriterInterface writer = getFileWriter(convertToJson);
+            writer.write();
         }else {
-
+            saveDatabase();
         }
 
 
@@ -53,12 +56,10 @@ public class FileConverter {
         csvWriter.write(context, data, keys);
     }
 
-    private FileWriterInterface getFileWriter(CheckBox convertToJson) {
-        if (convertToJson.isChecked()){
-            return jsonWriter;
-        }
-        return csvWriter;
+    private void saveDatabase() {
     }
+
+
 
 
     private List<String> getKeys(List<Map<String, Object>> data) {
@@ -97,6 +98,13 @@ public class FileConverter {
             return jsonReader;
         }
         throw new IllegalArgumentException("File Type Not Supported");
+    }
+
+    private FileWriterInterface getFileWriter(CheckBox convertToJson) {
+        if (convertToJson.isChecked()){
+            return jsonWriter;
+        }
+        return csvWriter;
     }
 }
 

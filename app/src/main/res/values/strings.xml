@@ -6,4 +6,5 @@
     <string name="convert_to_csv">Convert to CSV</string>
     <string name="parsing_tool">Parsing Tool</string>
     <string name="save_to_file">Save to File</string>
+    <string name="edit_text_file_name_hint">Insert File Name</string>
 </resources>

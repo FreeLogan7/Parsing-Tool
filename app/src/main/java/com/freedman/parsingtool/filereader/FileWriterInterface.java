@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface FileWriterInterface {
-    void write(Context context, List<Map<String, Object>> data, List<String> keys) throws IOException;
+    void write(Context context, List<Map<String, Object>> data, List<String> keys, String fileName) throws IOException;
 }
