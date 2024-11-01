@@ -17,9 +17,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.freedman.parsingtool.database.ParsedEntriesDao;
-import com.freedman.parsingtool.database.ParsedEntriesDatabase;
-import com.freedman.parsingtool.tables.ParsedEntries;
+import com.freedman.parsingtool.logicclass.FileConverter;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
@@ -27,8 +25,9 @@ import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity implements FileConverter.DisplayFileCreated {
 
-    private Button importData;
-    private Button reloadData;
+    private Button buttonImportData;
+    private Button buttonViewDatabase;
+    private Button buttonReloadData;
     private EditText userFileName;
     private CheckBox checkboxFile;
     private CheckBox checkboxDatabase;
@@ -51,12 +50,14 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
         importButtonClicked();
         saveButtons();
         convertButtons();
-        reloadDataClicked();
+        buttonViewDatabaseClicked();
+        buttonReloadDataClicked();
     }
 
     private void setViews() {
-        importData = findViewById(R.id.button_import_data);
-        reloadData = findViewById(R.id.button_reload_data);
+        buttonImportData = findViewById(R.id.button_import_data);
+        buttonViewDatabase = findViewById(R.id.button_view_database);
+        buttonReloadData = findViewById(R.id.button_reload_data);
         checkboxFile = findViewById(R.id.checkbox_file);
         checkboxDatabase = findViewById(R.id.checkbox_database);
         checkboxConvertToJson = findViewById(R.id.checkbox_json);
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
 
     //On Import Button Click SELECT any file!
     private void importButtonClicked() {
-        importData.setOnClickListener(v -> {
+        buttonImportData.setOnClickListener(v -> {
             if (checkImportButtonErrors()) mGetContent.launch("*/*");
         });
     }
@@ -161,13 +162,23 @@ public class MainActivity extends AppCompatActivity implements FileConverter.Dis
         });
     }
 
-    private void reloadDataClicked() {
-        reloadData.setOnClickListener(v-> {
+    private void buttonViewDatabaseClicked() {
+        buttonViewDatabase.setOnClickListener(v-> {
             Intent intent = new Intent(this, databaseInfoActivity.class);
-            startActivity(intent);
+            startActivity(intent.putExtra("id",1));
 
         });
     }
+
+    private void buttonReloadDataClicked() {
+        buttonReloadData.setOnClickListener(v-> {
+            Intent intent = new Intent(this, databaseInfoActivity.class);
+            startActivity(intent.putExtra("id",2));
+
+        });
+    }
+
+
 
     @Override
     public void onFileCreate(String fileName) {
